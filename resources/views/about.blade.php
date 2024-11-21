@@ -4,7 +4,6 @@
 
 @section('breadcrumb-title','About Us')
 @section('breadcrumb-subtitle','about us')
-
 @section('content')
 
    
