@@ -5,6 +5,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminServiceController;
 use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,12 +51,41 @@ Route::get('/single-blog', function () {
     return view('single-blog');
 });
 
-// Admin Routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::resource('/categories', AdminCategoryController::class);
-    Route::resource('/services', AdminServiceController::class);
+// Client and Provider Login
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
+
+// Admin Login
+Route::middleware('guest')->group(function () {
+    Route::get('/admin/login', [AuthenticatedSessionController::class, 'createAdmin'])->name('admin.login');
+    Route::post('/admin/login', [AuthenticatedSessionController::class, 'store']);
+});
+
+// Protected Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [AuthenticatedSessionController::class, 'redirectToDashboard'])->name('dashboard');
+});
+
+// Admin Protected Routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+});
+
+Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
+
+
+// Admin Routesss
+// Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+//     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+//     Route::resource('/categories', AdminCategoryController::class);
+//     Route::resource('/services', AdminServiceController::class);
+// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');

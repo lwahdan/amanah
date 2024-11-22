@@ -19,35 +19,69 @@ class AuthenticatedSessionController extends Controller
     {
         return view('auth.login');
     }
+    
+    public function createAdmin()
+    {
+        return view('auth.admin-login');
+    }
 
     /**
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        $request->session()->regenerate();
+        if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            $request->session()->regenerate();
 
-        if(auth()->user()->role==='admin'){
-            return redirect('/admin/dashboard'); 
+            // Redirect based on role
+            $role = Auth::user()->role;
+            if ($role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($role === 'provider') {
+                return redirect()->route('provider.dashboard');
+            } else {
+                return redirect()->route('client.dashboard');
+            }
         }
-        // return redirect(RouteServiceProvider::HOME);
-        return redirect()->intended(RouteServiceProvider::HOME);
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
 
     }
+
+    /**
+     * Redirect users to their appropriate dashboard after login.
+     */
+    public function redirectToDashboard()
+    {
+        $role = Auth::user()->role;
+        if ($role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($role === 'provider') {
+            return redirect()->route('provider.dashboard');
+        } else {
+            return redirect()->route('client.dashboard');
+        }
+    }
+    
 
     /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard('web')->logout(); // Log out the user
 
-        $request->session()->invalidate();
+        $request->session()->invalidate(); // Invalidate the session
 
-        $request->session()->regenerateToken();
+        $request->session()->regenerateToken(); // Regenerate CSRF token
 
-        return redirect('/');
+        return redirect('/'); // Redirect to the homepage or login page
     }
 }

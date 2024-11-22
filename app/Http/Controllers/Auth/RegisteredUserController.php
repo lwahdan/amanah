@@ -33,19 +33,35 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'string', 'max:15'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'profile_picture' => ['nullable', 'image', 'max:2048'], // Optional field
+            'role' => ['required', 'in:client,provider'], // Must be either client or provider
         ]);
+
+         // Handle Profile Picture Upload
+        $profilePicturePath = null;
+        if ($request->hasFile('profile_picture')) {
+        $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'profile_picture' => $request->file('profile_picture') 
+            ?$request->file('profile_picture')->store('profile_pictures', 'public') 
+            : null,
+            'role' => $request->role ?? 'client',
+            
         ]);
 
-        event(new Registered($user));
-
+        event(new Registered($user)); 
         Auth::login($user);
-
         return redirect(RouteServiceProvider::HOME);
+
+        // Auth::attempt(['email' => $request->email, 'password' => $request->password]);
+        // return redirect()->route('dashboard');
     }
 }

@@ -1,6 +1,22 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+{{-- <x-guest-layout> --}}
+
+    @extends('layouts.app')
+
+@section('title', 'Register')
+
+@section('content')
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
+
+        @if ($errors->any())
+        <div>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
         <!-- Name -->
         <div>
@@ -14,6 +30,13 @@
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <!-- Phone -->
+        <div>
+            <label for="phone">Phone</label>
+            <input id="phone" type="text" name="phone" value="{{ old('phone') }}" required>
+            @error('phone') <span>{{ $message }}</span> @enderror
         </div>
 
         <!-- Password -->
@@ -39,6 +62,20 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+         <!-- Role (Optional: If role selection is needed) -->
+         @if (request()->is('register-provider'))
+         <input type="hidden" name="role" value="provider">
+         @else
+         <input type="hidden" name="role" value="client">
+         @endif
+
+        <!-- Profile Picture (Optional) -->
+        <div>
+            <label for="profile_picture">Profile Picture</label>
+            <input id="profile_picture" type="file" name="profile_picture">
+            @error('profile_picture') <span>{{ $message }}</span> @enderror
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
@@ -49,4 +86,7 @@
             </x-primary-button>
         </div>
     </form>
-</x-guest-layout>
+
+    @endsection
+
+{{-- </x-guest-layout> --}}
