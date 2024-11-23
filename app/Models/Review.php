@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Booking extends Model
+class Review extends Model
 {
     use HasFactory;
 
@@ -13,16 +13,11 @@ class Booking extends Model
         'user_id',
         'service_id',
         'service_provider_id',
-        'city_id', 
-        'booking_date', 
-        'total_price',
+        'review', 
+        'rating', 
         'status', 
     ];
 
-    protected $casts = [
-        'booking_date' => 'datetime',
-    ];
-    
     public function user()
     {
     return $this->belongsTo(User::class);
@@ -36,11 +31,6 @@ class Booking extends Model
     public function serviceProvider()
     {
     return $this->belongsTo(ServiceProvider::class);
-    }
-
-    public function city()
-    {
-    return $this->belongsTo(City::class);
     }
 
 }

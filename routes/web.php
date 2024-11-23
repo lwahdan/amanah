@@ -82,6 +82,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('/services', AdminServiceController::class);
     Route::resource('/bookings', AdminBookingController::class);
     Route::resource('/reviews', AdminReviewController::class);
+    Route::put('/reviews/{id}/status', [AdminReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+
     // Reports
     Route::get('/reports', [AdminReportController::class, 'index'])->name('admin.reports');
 });
