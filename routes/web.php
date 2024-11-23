@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\AdminReviewController;
+use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\AdminServiceController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -69,27 +73,27 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Protected Routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    Route::resource('/users', AdminUserController::class);
+    Route::put('/users/{id}/restore', [AdminUserController::class, 'restore'])->name('users.restore');
+    Route::resource('/categories', AdminCategoryController::class);
+    Route::resource('/services', AdminServiceController::class);
+    Route::resource('/bookings', AdminBookingController::class);
+    Route::resource('/reviews', AdminReviewController::class);
+    // Reports
+    Route::get('/reports', [AdminReportController::class, 'index'])->name('admin.reports');
 });
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-});
+
 
 Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
 
 
-// Admin Routesss
-// Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-//     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-//     Route::resource('/categories', AdminCategoryController::class);
-//     Route::resource('/services', AdminServiceController::class);
-// });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
