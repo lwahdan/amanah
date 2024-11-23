@@ -1,13 +1,6 @@
 @extends('admin.layouts.app')
 
 @section('content')
-
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
     <h1>Categories</h1>
     <a href="{{ route('categories.create') }}" class="btn btn-primary">Add Category</a>
     <table>

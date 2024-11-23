@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class AdminServiceController extends Controller
@@ -11,7 +13,8 @@ class AdminServiceController extends Controller
      */
     public function index()
     {
-        //
+        $services = Service::paginate(10); // Fetch services with pagination
+        return view('admin.services.index', compact('services'));
     }
 
     /**
@@ -19,7 +22,8 @@ class AdminServiceController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all(); // Fetch categories for the dropdown
+        return view('admin.services.create', compact('categories'));
     }
 
     /**
@@ -27,7 +31,15 @@ class AdminServiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id', // Ensure category exists
+            'description' => 'nullable|string',
+        ]);
+    
+        Service::create($validated);
+    
+        return redirect()->route('services.index')->with('success', 'Service created successfully!');
     }
 
     /**
@@ -43,7 +55,9 @@ class AdminServiceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $service = Service::findOrFail($id);
+        $categories = Category::all(); // Fetch categories for the dropdown
+        return view('admin.services.edit', compact('service', 'categories'));
     }
 
     /**
@@ -51,7 +65,16 @@ class AdminServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string',
+        ]);
+    
+        $service = Service::findOrFail($id);
+        $service->update($validated);
+    
+        return redirect()->route('services.index')->with('success', 'Service updated successfully!');
     }
 
     /**
@@ -59,6 +82,9 @@ class AdminServiceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $service = Service::findOrFail($id);
+        $service->delete();
+
+        return redirect()->route('services.index')->with('success', 'Service deleted successfully!');
     }
 }
