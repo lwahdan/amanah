@@ -1,5 +1,6 @@
 @extends('admin.layouts.app')
 @section('content')
+
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -337,5 +338,5 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            @endsection
+@endsection
         
