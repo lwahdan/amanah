@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class AdminUserController extends Controller
 {
@@ -108,5 +110,33 @@ class AdminUserController extends Controller
     $user->restore(); // Restore the soft-deleted user
     return redirect()->route('users.index')->with('success', 'User restored successfully!');
     }
+
+    public function search(Request $request)
+    {
+    $query = $request->input('query');
+
+    $users = User::where('name', 'like', "%$query%")
+                 ->orWhere('email', 'like', "%$query%")
+                 ->paginate(10);
+
+    return view('admin.users.index', compact('users'));
+    }
+    
+    public function data(Request $request)
+    {
+        $query = User::query();
+
+        if ($request->has('query')) {
+            $search = $request->input('query');
+            $query->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%");
+        }
+
+        return DataTables::of($query)->toJson();
+    }
+
+
+
+
 
 }

@@ -73,11 +73,13 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Protected Routes
+//auth checks if the user is logging or not
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-
+    Route::get('/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
     Route::resource('/users', AdminUserController::class);
     Route::put('/users/{id}/restore', [AdminUserController::class, 'restore'])->name('users.restore');
+    Route::get('/users/search', [AdminUserController::class, 'search'])->name('users.search');
     Route::resource('/categories', AdminCategoryController::class);
     Route::resource('/services', AdminServiceController::class);
     Route::resource('/bookings', AdminBookingController::class);
@@ -86,9 +88,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     // Reports
     Route::get('/reports', [AdminReportController::class, 'index'])->name('admin.reports');
+
+    //admin search routes
+    // Route::get('/users/search', [AdminUserController::class, 'search'])->name('users.search');
+    // Route::get('/reviews/search', [AdminReviewController::class, 'search'])->name('reviews.search');
+    // Route::get('/bookings/search', [AdminBookingController::class, 'search'])->name('bookings.search');
+
 });
-
-
 
 Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
 
@@ -97,10 +103,12 @@ Route::post('/register', [RegisteredUserController::class, 'store'])->name('regi
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
+//from breeze
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/profile/logout', [ProfileController::class, 'UserLogout'])->name('profile.logout');
 });
 
 require __DIR__.'/auth.php';

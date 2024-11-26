@@ -57,4 +57,15 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function UserLogout(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout(); // Log out the user
+
+        $request->session()->invalidate(); // Invalidate the session
+
+        $request->session()->regenerateToken(); // Regenerate CSRF token
+
+        return redirect('/login'); // Redirect to the homepage or login page
+    }
 }

@@ -14,6 +14,8 @@ class AdminMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
+
+    //$request->login request in App\Http\Requests\Auth\LoginRequest
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check() && Auth::user()->role === 'admin') {

@@ -35,8 +35,7 @@
     <body>
 
         <!-- Header -->
-    @include('partials.header')
-
+    @include('partials.header')  
     <!-- Breadcrumb Section -->
     @if (!Request::is('/'))
         <div class="bradcam_area breadcam_bg bradcam_overlay">

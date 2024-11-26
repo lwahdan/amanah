@@ -1,7 +1,39 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<table>
+<table class="table">
+
+    <form 
+    method="GET" 
+    action="{{ route('users.search') }}" 
+    class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+>
+    <div class="input-group">
+        <input 
+            type="text" 
+            id="search-input"
+            name="query" 
+            class="form-control bg-light border-0 small" 
+            placeholder="Search for..." 
+            aria-label="Search" 
+            aria-describedby="basic-addon2"
+            value="{{ request('query') }}" 
+        >
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search fa-sm"></i>
+            </button>
+        </div>
+    </div>
+
+</form>
+@if (request('query'))
+<p>Search results for: "{{ request('query') }}"</p>
+@endif
+
+
+
+
     <a href="{{ route('users.create') }}" class="btn btn-primary">Add User</a>
 
     <!-- Filter Dropdown -->
@@ -60,5 +92,40 @@
 </table>
 
 {{ $users->appends(['status' => request('status')])->links() }}
-
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+let table = new DataTable('#example', {
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: '/admin/users/data', // Your route for the data method
+        data: function (d) {
+            d.query = $('#search-input').val(); // Pass the search term
+        }
+    },
+    columns: [
+        { data: 'id', name: 'id' },
+        { data: 'name', name: 'name' },
+        { data: 'email', name: 'email' },
+        { data: 'role', name: 'role' },
+        {
+            data: 'id',
+            render: function (data, type, row) {
+                return `<a href="/admin/users/${data}" class="btn btn-info btn-sm">View</a>`;
+            }
+        }
+    ]
+});
+
+// Reload the table when the search input changes
+$('#search-input').on('keyup', function () {
+    table.ajax.reload();
+});
+
+
+
+    });
+</script>

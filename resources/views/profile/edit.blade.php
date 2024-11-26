@@ -1,5 +1,5 @@
-{{-- <x-app-layout> --}}
-    {{-- <x-slot name="header">
+{{-- <x-app-layout>
+    <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Profile') }}
         </h2>
@@ -32,5 +32,12 @@
             </div>
         </div>
     </div>
+    {{-- <a href="{{route('profile.logout')}}">Logout</a> --}}
+    <form action="{{ route('profile.logout') }}" method="POST" style="display: inline;">
+        @csrf
+        <button type="submit" style="background: none; border: none; color: inherit; text-decoration: underline; cursor: pointer;">
+            Logout
+        </button>
+    </form>
     @endsection
 {{-- </x-app-layout> --}}

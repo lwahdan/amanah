@@ -1,5 +1,6 @@
 {{-- <x-guest-layout> --}}
-    @extends('layouts.app')
+
+@extends('layouts.app')
 
 @section('title', 'Login')
 
@@ -50,6 +51,7 @@
             </x-primary-button>
         </div>
     </form>
+
     @endsection
 
 {{-- </x-guest-layout> --}}

@@ -32,7 +32,7 @@ aria-hidden="true">
     <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
     <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="login.html">Logout</a>
+        <a class="btn btn-primary" href="{{route('admin.logout')}}">Logout</a>
     </div>
 </div>
 </div>
@@ -53,6 +53,9 @@ aria-hidden="true">
 <!-- Page level custom scripts -->
 <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
 <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 
 </body>
