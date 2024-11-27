@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +24,7 @@ class AdminUserController extends Controller
             $users = User::onlyTrashed()->orderBy('id','asc')->paginate(10); // Only soft-deleted users
         } else {
             $users = User::withTrashed()->orderBy('id','asc')->paginate(10); // Both active and deleted users
-        }
+        }      
         
         return view('admin.users.index', compact('users', 'status'));
     }

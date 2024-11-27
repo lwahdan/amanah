@@ -7,13 +7,14 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProfileUpdateRequest;
 
 
 class AdminController extends Controller
 {
     public function index(){
         return view('admin.dashboard');
-        
     }
 
     public function AdminLogout(Request $request): RedirectResponse
@@ -25,6 +26,12 @@ class AdminController extends Controller
         $request->session()->regenerateToken(); // Regenerate CSRF token
 
         return redirect('/admin/login'); // Redirect to the homepage or login page
+    }
+
+    public function AdminProfile(){
+        $id=auth::user()->id;
+        $profileData=User::find($id);
+        return view('admin.profile',compact('profileData'));
     }
 
 }
