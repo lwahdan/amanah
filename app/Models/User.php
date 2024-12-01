@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone', 
+        'address',
         'role', 
         'profile_picture', 
     ];
@@ -60,5 +61,15 @@ class User extends Authenticatable
     public function reviews()
     {
     return $this->hasMany(Review::class);
+    }
+
+    public function contactMessages()
+    {
+    return $this->hasMany(ContactMessage::class);
+    }
+
+    public function meetings()
+    {
+    return $this->hasMany(Meeting::class);
     }
 }

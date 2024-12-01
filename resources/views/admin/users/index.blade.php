@@ -36,14 +36,28 @@
 
     <a href="{{ route('users.create') }}" class="btn btn-primary">Add User</a>
 
-    <!-- Filter Dropdown -->
-    <form method="GET" action="{{ route('users.index') }}" style="display: inline;">
-    <select name="status" onchange="this.form.submit()" class="form-select">
-        <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All</option>
-        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-        <option value="deleted" {{ request('status') == 'deleted' ? 'selected' : '' }}>Deleted</option>
-    </select>
+    <form method="GET" action="{{ route('users.index') }}" class="d-flex">
+        <!-- Status Dropdown -->
+        <label for="status" class="me-2">Status:</label>
+        <select name="status" id="status" class="form-select me-3">
+            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All</option>
+            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+            <option value="deleted" {{ request('status') == 'deleted' ? 'selected' : '' }}>Deleted</option>
+        </select>
+    
+        <!-- Role Dropdown -->
+        <label for="role" class="me-2">Role:</label>
+        <select name="role" id="role" class="form-select">
+            <option value="all" {{ request('role') == 'all' ? 'selected' : '' }}>All</option>
+            <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+            <option value="client" {{ request('role') == 'client' ? 'selected' : '' }}>Client</option>
+            <option value="provider" {{ request('role') == 'provider' ? 'selected' : '' }}>Provider</option>
+        </select>
+    
+        <button type="submit" class="btn btn-primary ms-3">Filter</button>
     </form>
+    
+    
 
     <thead>
         <tr>

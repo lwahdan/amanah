@@ -13,12 +13,19 @@ class ServiceProvider extends Model
         'user_id',
         'bio',
         'certifications',
-        'specialty',
-        'hourly_rate',
+        'gender',
+        'date_of_birth',
+        'years_of_experience',
+        'education',
+        'skills',
+        'languages_spoken',
         'availability',
-        'phone',
-        'status',
+        'hourly_rate',
+        'work_shifts',
+        'work_locations',
+        'background_checked',
     ];
+    
     
 
     public function user()
@@ -28,7 +35,9 @@ class ServiceProvider extends Model
 
     public function services()
     {
-    return $this->belongsToMany(Service::class, 'service_provider_service'); // Pivot table
+    //return $this->belongsToMany(Service::class, 'service_provider_service'); // Pivot table
+    return $this->belongsToMany(Service::class, 'service_provider_service', 'service_provider_id', 'service_id');
+
     }
 
     public function bookings()
@@ -39,6 +48,11 @@ class ServiceProvider extends Model
     public function reviews()
     {
     return $this->hasMany(Review::class);
+    }
+
+    public function meetings()
+    {
+    return $this->hasMany(Meeting::class);
     }
 
 }

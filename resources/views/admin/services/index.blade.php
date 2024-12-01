@@ -27,6 +27,10 @@
                             @method('DELETE')
                             <button type="submit">Delete</button>
                         </form>
+                        <a href="{{ route('services.show', $service->id) }}" class="btn btn-info">
+                            Providers
+                        </a>
+                        
                     </td>
                 </tr>
             @endforeach

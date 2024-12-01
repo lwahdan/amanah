@@ -34,6 +34,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'phone' => ['required', 'string', 'max:15'],
+            'address' => ['nullable', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'profile_picture' => ['nullable', 'image', 'max:2048'], // Optional field
             'role' => ['required', 'in:client,provider'], // Must be either client or provider

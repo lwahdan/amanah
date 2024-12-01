@@ -13,6 +13,6 @@ class ServiceProvidersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        ServiceProvider::factory(20)->create();
+        ServiceProvider::factory()->count(50)->create();
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use auth;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\ServiceProvider;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -17,17 +18,27 @@ class AdminUserController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status', 'all'); // Default to 'all'
+        $role = $request->get('role', 'all');    // Default to 'all'
+
+        // Base query
+        $query = User::query();
     
         if ($status === 'active') {
-            $users = User::whereNull('deleted_at')->orderBy('id','asc')->paginate(10); // Only active users
+            $query->whereNull('deleted_at'); // Active users
         } elseif ($status === 'deleted') {
-            $users = User::onlyTrashed()->orderBy('id','asc')->paginate(10); // Only soft-deleted users
+            $query->onlyTrashed(); // Soft-deleted users
         } else {
-            $users = User::withTrashed()->orderBy('id','asc')->paginate(10); // Both active and deleted users
+            $query->withTrashed(); // Include both active and deleted users
         }      
-        
-        return view('admin.users.index', compact('users', 'status'));
-    }
+
+        // Apply role filter
+        if ($role !== 'all') {
+        $query->where('role', $role);
+        }
+        // Execute query and paginate results
+        $users = $query->orderBy('id', 'asc')->paginate(100);
+        return view('admin.users.index', compact('users', 'status', 'role'));
+        }
 
     /**
      * Show the form for creating a new resource.
@@ -66,8 +77,21 @@ class AdminUserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::findOrFail($id);
-        return view('admin.users.show', compact('user'));
+        // Fetch the user with their associated service provider
+        $user = User::with(['bookings.service', 'reviews.service', 'contactMessages', 'meetings.serviceProvider.user','serviceProvider'])->findOrFail($id);
+
+
+        if ($user->role === 'provider') {
+            // Fetch the service provider with their services based on user_id
+            //$provider = ServiceProvider::with('services')->where('user_id', $id)->firstOrFail();
+            $provider = $user->serviceProvider;
+    
+            return view('admin.users.show_provider', compact('user', 'provider'));
+        } elseif (in_array($user->role, ['client', 'admin'])) {
+            return view('admin.users.show', compact('user'));
+        } else {
+            abort(404, 'Role not supported.');
+        }
     }
 
     /**
